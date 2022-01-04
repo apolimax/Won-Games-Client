@@ -10,50 +10,43 @@ import highlightMock from 'components/Highlight/mock'
 
 const props = {
   banners: bannersMock,
-  newGames: [gamesMock[0]],
+  newGames: gamesMock,
   mostPopularHighlight: highlightMock,
-  mostPopularGames: [gamesMock[0]],
-  upcommingGames: [gamesMock[0]],
+  mostPopularGames: gamesMock,
+  upcommingGames: gamesMock,
   upcommingHighligth: highlightMock,
-  upcommingMoreGames: [gamesMock[0]],
-  freeGames: [gamesMock[0]],
+  upcommingMoreGames: gamesMock,
+  freeGames: gamesMock,
   freeHighligth: highlightMock
 }
 
+// Mocking react components
+// <ShowCase />
+jest.mock('components/ShowCase', () => {
+  return {
+    __esModule: true,
+    default: function Mock() {
+      return <div data-testid="Mock ShowCase"></div>
+    }
+  }
+})
+
+jest.mock('components/BannerSlider', () => {
+  return {
+    __esModule: true,
+    default: function Mock() {
+      return <div data-testid="Mock BannerSlider"></div>
+    }
+  }
+})
+
+// We are already testing the components separately. that's why we're mocking them to make the test to run faster. We're only calling the
+// mocking components to see if they're rendered.
 describe('<Home />', () => {
-  it('should render the menu and footer', () => {
+  it('should render banner and showcases', () => {
     renderWithTheme(<Home {...props} />)
 
-    expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: /contact us/i })
-    ).toBeInTheDocument()
-
-    // should render the headings News, Most Popular, Upcoming and Free Games
-    expect(screen.getByRole('heading', { name: /news/i })).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: /most popular/i })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: /upcoming/i })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: /free games/i })
-    ).toBeInTheDocument()
-
-    // should render section elements
-    expect(screen.getAllByText(/defy death 1/i)).toHaveLength(1) // 1 banner
-
-    expect(screen.getAllByText(/population zero/i)).toHaveLength(5) // 5 card games (5 * 1)
-
-    expect(screen.getAllByText(/heading 1/i)).toHaveLength(3) // 3 highlights
+    expect(screen.getByTestId('Mock BannerSlider')).toBeInTheDocument()
+    expect(screen.getAllByTestId('Mock ShowCase')).toHaveLength(5)
   })
-
-  // it('should render the headings News, Most Popular, Upcoming and Free Games', () => {
-
-  // })
-
-  // it('should render section elements', () => {
-
-  // })
 })
